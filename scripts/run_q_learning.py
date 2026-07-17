@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import matplotlib.pyplot as plt
 
-from gridworld.examples import make_slippery_gridworld
+from gridworld.examples import make_easy_gridworld, make_slippery_gridworld
 from gridworld.q_learning import q_learning
 from gridworld.plotting import plot_q_values, plot_policy, plot_learning_curve
 from gridworld.animation import animate_episode
@@ -30,18 +30,20 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "outputs")
 
 def main() -> None:
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    env = make_slippery_gridworld(seed=0)
+    env = make_easy_gridworld(seed=0) #make_slippery_gridworld(seed=0)
 
     Q, policy, episode_returns, episode_lengths = q_learning(
         env,
-        episodes=2000,
-        alpha=0.1,
-        gamma=0.95,
+        episodes=100000,
+        alpha=0.01,
+        gamma=0.999,
         epsilon=1.0,
-        epsilon_min=0.05,
-        epsilon_decay=0.995,
+        epsilon_min=0.5,
+        epsilon_decay=0.99995,
         seed=0,
     )
+
+    print("")
     print(
         f"Q-learning finished {len(episode_returns)} episodes; "
         f"mean return over last 100 episodes = "

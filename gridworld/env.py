@@ -116,7 +116,12 @@ class GridWorldEnv(gym.Env):
         if seed is not None:
             self._rng = np.random.default_rng(seed)
 
-        self._agent_pos = self.config.start
+        # self._agent_pos = self.config.start
+        # _agent_pos_x = self._rng.integers(0, self.width)
+        # _agent_pos_y = self._rng.integers(0, self.height)
+        # self._agent_pos = (int(_agent_pos_x), int(_agent_pos_y))
+        self._agent_pos = (3, 0)  
+
         self._step_count = 0
         self.trajectory = self._empty_trajectory()
         self.trajectory["positions"].append(self._agent_pos)
