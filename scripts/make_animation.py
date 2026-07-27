@@ -15,9 +15,6 @@ Run from the repository root:
 from __future__ import annotations
 
 import os
-import sys
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from gridworld.examples import make_easy_gridworld
 from gridworld.animation import animate_episode

@@ -6,3 +6,9 @@ venv/
 .DS_Store
 .ipynb_checkpoints/
 .claude/
+
+# Packaging / build artefacts
+build/
+dist/
+*.egg-info/
+.eggs/

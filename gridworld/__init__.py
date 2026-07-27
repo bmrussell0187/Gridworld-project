@@ -15,4 +15,6 @@ plotting, animation, and optional Stable-Baselines3 training).
 from .config import GridWorldConfig
 from .env import GridWorldEnv
 
-__all__ = ["GridWorldConfig", "GridWorldEnv"]
+__version__ = "0.1.0"
+
+__all__ = ["GridWorldConfig", "GridWorldEnv", "__version__"]

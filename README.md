@@ -8,7 +8,8 @@ prioritises clarity and mathematical traceability over scale.
 ```
 gridworld_project/
     README.md
-    requirements.txt
+    pyproject.toml               # package metadata + dependencies
+    requirements.txt             # convenience wrapper: `-e .[sb3]`
     gridworld/
         config.py                # GridWorldConfig dataclass (defines an MDP instance)
         env.py                   # GridWorldEnv (Gymnasium environment)
@@ -94,16 +95,38 @@ screen).
 
 ## 2. Installation
 
+`gridworld` is a proper Python package. Install it in **editable mode** so
+that edits to the source tree take effect immediately, without reinstalling
+and without any `sys.path` juggling in the scripts.
+
 From inside `gridworld_project/`:
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate        # on Windows: venv\Scripts\activate
-pip install -r requirements.txt
+pip install -e ".[sb3]"         # or: pip install -r requirements.txt
 ```
 
-Dependencies (`requirements.txt`): `gymnasium`, `numpy`, `matplotlib`,
-`pillow`, `stable-baselines3`. All plotting uses matplotlib's headless
+Requires Python >= 3.10.
+
+Install variants:
+
+```bash
+pip install -e .                # core only (no Stable-Baselines3/torch)
+pip install -e ".[sb3]"         # + Stable-Baselines3, for scripts/run_sb3_dqn.py
+pip install -e ".[sb3,dev]"     # + pytest
+```
+
+After this, `import gridworld` works from *any* working directory:
+
+```python
+from gridworld.examples import make_easy_gridworld
+from gridworld.dynamic_programming import value_iteration
+```
+
+Dependencies are declared in `pyproject.toml`: `gymnasium`, `numpy`,
+`matplotlib`, `pillow`, plus `stable-baselines3` under the optional `sb3`
+extra. All plotting uses matplotlib's headless
 `Agg` backend, so nothing here requires a display / X server -- it works
 fine over SSH or in CI.
 
@@ -118,8 +141,9 @@ instead.
 
 ## 3. Running the scripts
 
-All scripts are run from the repository root (`gridworld_project/`) and
-write their outputs into `outputs/`:
+With the package installed (section 2), the scripts can be run from any
+working directory; they resolve `outputs/` relative to their own location,
+so everything still lands in `gridworld_project/outputs/`:
 
 ```bash
 python scripts/run_random_agent.py       # baseline: uniformly random policy

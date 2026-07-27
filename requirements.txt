@@ -1,5 +1,6 @@
-gymnasium>=0.29
-numpy>=1.24
-matplotlib>=3.7
-pillow>=10.0
-stable-baselines3>=2.2
+# Dependencies are declared in pyproject.toml; this file just installs the
+# project itself in editable mode along with the optional SB3 extra.
+#
+#   pip install -r requirements.txt
+#
+-e .[sb3]

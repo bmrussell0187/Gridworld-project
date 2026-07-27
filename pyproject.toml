@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gridworld"
+version = "0.1.0"
+description = "A configurable finite-MDP GridWorld environment for reinforcement learning experiments."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Matthew Fisher", email = "matthewalexanderfisher@gmail.com" }]
+keywords = ["reinforcement-learning", "gridworld", "gymnasium", "mdp"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "gymnasium>=0.29",
+    "numpy>=1.24",
+    "matplotlib>=3.7",
+    "pillow>=10.0",
+]
+
+[project.optional-dependencies]
+# Deep-RL baselines, only needed by scripts/run_sb3_dqn.py.
+sb3 = ["stable-baselines3>=2.2"]
+dev = ["pytest>=7.0"]
+
+[tool.setuptools]
+# Explicit package list: the repo root also holds scripts/, experiments/ and
+# outputs/, which flat-layout auto-discovery would otherwise trip over.
+packages = ["gridworld"]
