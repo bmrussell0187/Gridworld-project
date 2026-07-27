@@ -1,9 +1,10 @@
 """A handful of ready-made GridWorld MDPs for dissertation experiments.
 
-Each ``make_*`` function returns a fully-constructed :class:`GridWorldEnv`.
-They are deliberately small and easy to reason about by hand, so that a
-student can verify dynamic-programming / Q-learning results against
-intuition (or against a hand-drawn transition diagram).
+Each ``make_*`` function returns a fully-constructed :class:`GridWorldEnv`
+(or, for the mining variants, a :class:`MineWorldEnv`). They are deliberately
+small and easy to reason about by hand, so that a student can verify
+dynamic-programming / Q-learning results against intuition (or against a
+hand-drawn transition diagram).
 
 Grid coordinate convention: (x, y), with (0, 0) at the bottom-left and y
 increasing upwards -- so "top-right" means large x, large y.
@@ -13,9 +14,11 @@ from __future__ import annotations
 
 from .config import GridWorldConfig
 from .env import GridWorldEnv
+from .mining_config import MineWorldConfig
+from .mining_env import MineWorldEnv
 
 
-def make_easy_gridworld(seed: int | None = 0) -> GridWorldEnv:
+def make_easy_gridworld(seed: int | None = 0, render_mode: str | None = None) -> GridWorldEnv:
     """Example 1: small 5x5 deterministic gridworld.
 
     - Start: bottom-left, (0, 0).
@@ -40,10 +43,10 @@ def make_easy_gridworld(seed: int | None = 0) -> GridWorldEnv:
         max_steps=100,
         seed=seed,
     )
-    return GridWorldEnv(config)
+    return GridWorldEnv(config, render_mode=render_mode)
 
 
-def make_walled_gridworld(seed: int | None = 0) -> GridWorldEnv:
+def make_walled_gridworld(seed: int | None = 0, render_mode: str | None = None) -> GridWorldEnv:
     """Example 2: 6x6 gridworld with obstacles separating start and goal.
 
     The agent must navigate around a wall of blocked cells to reach the
@@ -65,10 +68,10 @@ def make_walled_gridworld(seed: int | None = 0) -> GridWorldEnv:
         max_steps=150,
         seed=seed,
     )
-    return GridWorldEnv(config)
+    return GridWorldEnv(config, render_mode=render_mode)
 
 
-def make_slippery_gridworld(seed: int | None = 0) -> GridWorldEnv:
+def make_slippery_gridworld(seed: int | None = 0, render_mode: str | None = None) -> GridWorldEnv:
     """Example 3: the easy gridworld made stochastic (slip_probability=0.2).
 
     Identical layout to :func:`make_easy_gridworld`, but 20% of the time
@@ -92,10 +95,10 @@ def make_slippery_gridworld(seed: int | None = 0) -> GridWorldEnv:
         max_steps=100,
         seed=seed,
     )
-    return GridWorldEnv(config)
+    return GridWorldEnv(config, render_mode=render_mode)
 
 
-def make_reward_shaping_gridworld(seed: int | None = 0) -> GridWorldEnv:
+def make_reward_shaping_gridworld(seed: int | None = 0, render_mode: str | None = None) -> GridWorldEnv:
     """Example 4: reward shaping via intermediate reward cells.
 
     Same 5x5 layout and goal/trap as :func:`make_easy_gridworld`, but with
@@ -124,10 +127,10 @@ def make_reward_shaping_gridworld(seed: int | None = 0) -> GridWorldEnv:
         max_steps=100,
         seed=seed,
     )
-    return GridWorldEnv(config)
+    return GridWorldEnv(config, render_mode=render_mode)
 
 
-def make_maze_gridworld(seed: int | None = 0) -> GridWorldEnv:
+def make_maze_gridworld(seed: int | None = 0, render_mode: str | None = None) -> GridWorldEnv:
     walls: set[tuple[int, int]] = set()
     walls |= {(0, y) for y in (3, 4, 5)}
     walls |= {(1, y) for y in (3, 8)}
@@ -167,4 +170,159 @@ def make_maze_gridworld(seed: int | None = 0) -> GridWorldEnv:
         seed=seed,
     )
 
-    return GridWorldEnv(config)
+    return GridWorldEnv(config, render_mode=render_mode)
+
+
+# ----------------------------------------------------------------------
+# MineWorld: GridWorld + a MINE action with per-node memory
+# ----------------------------------------------------------------------
+def make_mining_gridworld(
+    seed: int | None = 0, render_mode: str | None = None
+) -> MineWorldEnv:
+    """Example 6: a 5x5 mining world with two independent mining nodes.
+
+    Layout::
+
+        start (0, 0)      goal (4, 4) = +1.0     trap (4, 0) = -1.0
+        mining nodes at (1, 3) and (3, 1)
+
+    Mining schedule (linear probability decay, deterministic payout, cap C=3,
+    failure = -10.0). ``m`` is the attempt number *at that node*; because
+    counts are capped at C=3, ``m = 4`` repeats forever once a node has been
+    mined three times::
+
+        m   p(m)    R+(m)    E[reward of the attempt]
+        1   0.95     1.0      0.95*1.0 + 0.05*(-10) = +0.45
+        2   0.80     2.5      0.80*2.5 + 0.20*(-10) =  0.00
+        3   0.65     4.0      0.65*4.0 + 0.35*(-10) = -0.90
+        4+  0.50     5.5      0.50*5.5 + 0.50*(-10) = -2.25
+
+    This is a genuine risk/reward decision rather than a free lunch: the
+    first attempt at a fresh node is clearly worth taking, the second is
+    exactly break-even in immediate terms (and therefore *negative* once the
+    forgone goal reward and the step cost are discounted in), and everything
+    beyond that destroys value. An optimal agent mines each node once and
+    then walks to the goal.
+
+    The payout distribution is ``"deterministic"``, so the MDP has finite
+    reward support and ``transition_probabilities`` can enumerate it exactly:
+    this example is solvable by value/policy iteration. The state space is
+    5 * 5 * 4**2 = 400 states.
+    """
+    config = MineWorldConfig(
+        width=5,
+        height=5,
+        start=(0, 0),
+        terminal_states={(4, 4): 1.0, (4, 0): -1.0},
+        rewards={},
+        walls=set(),
+        step_reward=-0.05,
+        invalid_move_reward=-0.10,
+        slip_probability=0.0,
+        max_steps=100,
+        seed=seed,
+        mining_nodes={(1, 3), (3, 1)},
+        max_mining_count=3,
+        positive_probability_schedule="linear",
+        initial_positive_probability=0.95,
+        positive_probability_decrement=0.15,
+        minimum_positive_probability=0.05,
+        positive_reward_distribution="deterministic",
+        positive_reward_base_mean=1.0,
+        positive_reward_mean_increment=1.5,
+        mining_failure_reward=-10.0,
+    )
+    return MineWorldEnv(config, render_mode=render_mode)
+
+
+def make_risky_mining_gridworld(
+    seed: int | None = 0, render_mode: str | None = None
+) -> MineWorldEnv:
+    """Example 7: the mining world with a random payout *and* slippery moves.
+
+    Same layout and probability schedule as :func:`make_mining_gridworld`,
+    but two extra sources of randomness:
+
+    * the payout of a successful mine is ``"categorical"`` -- it pays
+      0.5x, 1.0x or 1.5x of ``mu(m) = 1.0 + (m - 1) * 1.5`` with
+      probabilities 0.25 / 0.5 / 0.25, so the expected payout matches the
+      deterministic example while the variance grows with ``m``;
+    * ``slip_probability = 0.1``, so one action in ten is replaced by a
+      uniformly random *different* action -- which can turn an intended move
+      into an unintended ``MINE`` (and vice versa).
+
+    The categorical payout still has finite support, so this example remains
+    exactly solvable by dynamic programming; it is the interesting middle
+    ground between a deterministic teaching example and a fully continuous
+    reward model.
+    """
+    config = MineWorldConfig(
+        width=5,
+        height=5,
+        start=(0, 0),
+        terminal_states={(4, 4): 1.0, (4, 0): -1.0},
+        rewards={},
+        walls=set(),
+        step_reward=-0.05,
+        invalid_move_reward=-0.10,
+        slip_probability=0.1,
+        max_steps=100,
+        seed=seed,
+        mining_nodes={(1, 3), (3, 1)},
+        max_mining_count=3,
+        positive_probability_schedule="linear",
+        initial_positive_probability=0.95,
+        positive_probability_decrement=0.15,
+        minimum_positive_probability=0.05,
+        positive_reward_distribution="categorical",
+        positive_reward_base_mean=1.0,
+        positive_reward_mean_increment=1.5,
+        positive_reward_multipliers=(0.5, 1.0, 1.5),
+        positive_reward_multiplier_probabilities=(0.25, 0.5, 0.25),
+        mining_failure_reward=-10.0,
+    )
+    return MineWorldEnv(config, render_mode=render_mode)
+
+
+def make_continuous_mining_gridworld(
+    seed: int | None = 0, render_mode: str | None = None
+) -> MineWorldEnv:
+    """Example 8: mining with a *continuous* (log-normal) payout.
+
+    Identical to :func:`make_mining_gridworld` apart from the payout law: a
+    successful m-th mine pays ``LogNormal(log mu(m), sigma(m))``, whose
+    median is ``mu(m)`` and whose spread widens with ``m``.
+
+    This example is **simulation-only**: a continuous reward distribution has
+    no finite support, so ``transition_probabilities`` raises
+    :class:`~gridworld.mining_config.ContinuousRewardModelError` rather than
+    silently substituting an expectation. Use it with model-free methods
+    (``q_learning``, Stable-Baselines3) and contrast it with the exactly
+    solvable examples above.
+    """
+    config = MineWorldConfig(
+        width=5,
+        height=5,
+        start=(0, 0),
+        terminal_states={(4, 4): 1.0, (4, 0): -1.0},
+        rewards={},
+        walls=set(),
+        step_reward=-0.05,
+        invalid_move_reward=-0.10,
+        slip_probability=0.0,
+        max_steps=100,
+        seed=seed,
+        mining_nodes={(1, 3), (3, 1)},
+        max_mining_count=3,
+        positive_probability_schedule="linear",
+        initial_positive_probability=0.95,
+        positive_probability_decrement=0.15,
+        minimum_positive_probability=0.05,
+        positive_reward_distribution="lognormal",
+        positive_reward_base_mean=1.0,
+        positive_reward_mean_increment=1.5,
+        positive_reward_base_std=0.3,
+        positive_reward_std_increment=0.05,
+        mining_failure_reward=-10.0,
+    )
+    return MineWorldEnv(config, render_mode=render_mode)

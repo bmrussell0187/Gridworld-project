@@ -34,3 +34,10 @@ dev = ["pytest>=7.0"]
 # Explicit package list: the repo root also holds scripts/, experiments/ and
 # outputs/, which flat-layout auto-discovery would otherwise trip over.
 packages = ["gridworld"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# tests/ is not a package; adding it to sys.path lets the test modules import
+# the shared helpers in conftest.py directly.
+pythonpath = ["tests"]
+filterwarnings = ["error::DeprecationWarning"]

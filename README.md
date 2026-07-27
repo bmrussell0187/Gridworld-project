@@ -13,18 +13,23 @@ gridworld_project/
     gridworld/
         config.py                # GridWorldConfig dataclass (defines an MDP instance)
         env.py                   # GridWorldEnv (Gymnasium environment)
+        mining_config.py          # MineWorldConfig: mining nodes + reward/probability schedules
+        mining_env.py             # MineWorldEnv: GridWorld + a MINE action with per-node memory
         plotting.py               # static plots: layout, policy, value function, Q-values, learning curve
         animation.py              # episode animation (GIF/MP4)
         dynamic_programming.py    # value iteration, policy iteration (model-based)
         q_learning.py              # tabular Q-learning (model-free)
-        examples.py                # four ready-made GridWorld MDPs
+        examples.py                # ready-made GridWorld and MineWorld MDPs
+        registration.py            # Gymnasium ids, e.g. gym.make("MineWorld-v0")
     scripts/
         run_random_agent.py
         run_value_iteration.py
         run_policy_iteration.py
         run_q_learning.py
         run_sb3_dqn.py             # optional: Stable-Baselines3 DQN
+        run_mining_world.py        # the MineWorld extension end to end
         make_animation.py
+    tests/                        # pytest suite for both environments
     outputs/                      # all generated PNG/GIF/MP4 files land here
 ```
 
@@ -152,6 +157,7 @@ python scripts/run_policy_iteration.py   # exact solution via policy iteration (
 python scripts/run_q_learning.py         # model-free tabular learning on the slippery gridworld
 python scripts/run_sb3_dqn.py            # optional: deep RL via Stable-Baselines3
 python scripts/make_animation.py         # minimal animate_episode usage example
+python scripts/run_mining_world.py       # the MineWorld extension (see section 8)
 ```
 
 Expected files after running the first four (plus `make_animation.py`):
@@ -299,3 +305,118 @@ to compare tabular RL against a standard deep RL baseline on the same MDP.
   and the `seed` arguments of `q_learning` / DQN for reproducibility.
 - The environment records a full trajectory (`env.trajectory`) during each
   episode, which `animate_episode` consumes by default.
+- `pytest` covers both environments (`python -m pytest`).
+
+---
+
+## 8. MineWorld: the mining extension
+
+`MineWorldEnv` (`gridworld/mining_env.py`, configured by
+`gridworld/mining_config.py`) adds a fifth action, `MINE`, and a set of
+*mining nodes*. Standing on a node and executing `MINE` is a gamble whose
+odds worsen — and whose payoff grows — every time that node is mined.
+
+```python
+from gridworld.examples import make_mining_gridworld
+from gridworld.dynamic_programming import value_iteration
+
+env = make_mining_gridworld()
+print(env.config.describe_mining_schedule())
+V, policy, history = value_iteration(env, gamma=0.95)
+```
+
+### The state must include the mining counts
+
+The payoff of the *next* attempt depends on how often each node has already
+been mined, so the counts are part of the state — a single scalar "streak"
+would not be Markov once several nodes can be mined independently:
+
+```
+state = (agent_position, mining_count_at_node_1, ..., mining_count_at_node_K)
+```
+
+Each count is capped at `max_mining_count = C`, so the flattened state space
+has `width * height * (C + 1) ** K` entries, and
+`components_to_state` / `state_to_components` are exact inverses over all of
+it. Counts record **attempts** (including the final, fatal one), reset to
+zero in `reset()`, and are only ever touched when the *executed* action is
+`MINE` on a node — never by entering, leaving, bumping into, or slipping
+past one. Once a node's count reaches `C`, it stays there and every further
+attempt is evaluated at the saturated level `m = C + 1`.
+
+> **Scalability.** That state space grows *exponentially* in the number of
+> mining nodes `K`. It is fine for the teaching examples (the default is
+> 5 × 5 × 4² = 400 states), but `MineWorldConfig` warns above 100k states
+> and refuses to build above 2M. Beyond a handful of nodes, tabular methods
+> stop being the right tool.
+
+### The mining gamble
+
+On the `m`-th attempt at a node the environment pays out with probability
+`p(m)` and otherwise collapses, ending the episode:
+
+| outcome | probability | reward | terminates? |
+|---|---|---|---|
+| strike | `p(m)` | `step_reward + R_positive(m)` | no |
+| collapse | `1 - p(m)` | `step_reward + mining_failure_reward(m)` | **yes** |
+
+`p(m)` is non-increasing (`"constant"`, `"linear"` or `"geometric"`
+schedules) while `R_positive(m)` grows with `m`. Both are configured with
+plain named parameters rather than callables, so a config stays printable
+and serialisable. A collapse is signalled purely by the transition's
+`terminated` flag — the node itself is never a terminal cell, since a
+*successful* mine has to leave the agent free to act from that same square.
+
+### Exact dynamic programming vs. continuous rewards
+
+`transition_probabilities()` returns a finite list of
+`(probability, next_state, reward, terminated)` tuples, which cannot
+represent a continuous reward law. So the payout distributions split in two:
+
+| distribution | `step()` | `transition_probabilities()` |
+|---|---|---|
+| `deterministic`, `categorical` | ✅ | ✅ enumerated exactly |
+| `normal`, `lognormal`, `gamma` | ✅ | ❌ `ContinuousRewardModelError` |
+
+The random reward is **never** silently replaced by its expectation, because
+that would make the DP model describe a different MDP from the one `step()`
+samples. Both views are generated by one side-effect-free enumerator
+(`_transition_branches`), so they cannot drift apart; querying the model
+never mutates the environment.
+
+### Ready-made examples
+
+| factory | Gymnasium id | payout | slip | exact DP? |
+|---|---|---|---|---|
+| `make_mining_gridworld` | `MineWorld-v0` | deterministic | 0.0 | yes |
+| `make_risky_mining_gridworld` | `MineWorldRisky-v0` | categorical | 0.1 | yes |
+| `make_continuous_mining_gridworld` | `MineWorldContinuous-v0` | log-normal | 0.0 | no |
+
+The default schedule is tuned so mining is a real decision rather than a
+free lunch — the first attempt at a fresh node is clearly worth taking, the
+second is exactly break-even, and the third destroys value:
+
+```
+  m   p(m)    R+(m)    E[reward of the attempt]
+  1   0.95     1.0     +0.45
+  2   0.80     2.5      0.00
+  3   0.65     4.0     -0.90
+  4+  0.50     5.5     -2.25
+```
+
+Value iteration duly mines each node exactly once and then walks to the goal.
+
+### Plots and animation
+
+Mining nodes are shaded and marked with a diamond plus the current attempt
+count, placed in the cell corner so it stays readable when the agent is
+standing on the node. Because a MineWorld policy/value/Q array has one entry
+per *(cell, count-vector)* pair, `plot_policy`, `plot_value_function` and
+`plot_q_values` take a `mining_counts=` argument selecting which slice to
+draw (default: all zeros); `MINE` is drawn as a cross rather than an arrow.
+`plot_mining_schedule(config)` charts the risk/reward trade-off against `m`.
+
+Trajectories store one immutable count snapshot per frame, so
+`animate_episode` shows the counts *as they were at that time*, with the
+reset state as frame 0 and a red marker plus a "MINE COLLAPSED" annotation
+on a fatal final frame.

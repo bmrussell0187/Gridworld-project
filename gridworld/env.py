@@ -66,6 +66,10 @@ class GridWorldEnv(gym.Env):
 
     metadata = {"render_modes": ["rgb_array"], "render_fps": 4}
 
+    # Used by animation.py to label actions in frame titles. MineWorldEnv
+    # overrides this with its five-action map.
+    action_names = ACTION_NAMES
+
     def __init__(self, config: GridWorldConfig, render_mode: str | None = None) -> None:
         super().__init__()
         self.config = config
@@ -105,6 +109,16 @@ class GridWorldEnv(gym.Env):
         """Convert a flattened state index back to an (x, y) grid cell."""
         y, x = divmod(state, self.width)
         return (x, y)
+
+    def skip_state_indices(self) -> set[int]:
+        """States the DP sweeps should never update: terminal and wall cells.
+
+        See ``dynamic_programming._terminal_and_wall_indices``. MineWorldEnv
+        overrides this, since one cell there maps to many state indices.
+        """
+        skip = {self.coord_to_state(c) for c in self.config.terminal_states}
+        skip |= {self.coord_to_state(c) for c in self.walls}
+        return skip
 
     # ------------------------------------------------------------------
     # Gymnasium API

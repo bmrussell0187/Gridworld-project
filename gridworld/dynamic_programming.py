@@ -36,17 +36,32 @@ def _terminal_and_wall_indices(env) -> set[int]:
     Wall cells are not reachable/occupiable states, but we still allocate
     array slots for every (x, y) index for simplicity; they are simply
     skipped by the sweeps below.
+
+    Environments with an augmented state space (e.g.
+    :class:`~gridworld.mining_env.MineWorldEnv`, whose state is a cell *plus*
+    a mining-count vector) expose their own ``skip_state_indices()``, since
+    one cell then corresponds to many state indices.
     """
+    if hasattr(env, "skip_state_indices"):
+        return set(env.skip_state_indices())
     skip = {env.coord_to_state(c) for c in env.config.terminal_states}
     skip |= {env.coord_to_state(c) for c in env.walls}
     return skip
 
 
 def _action_value(env, V: np.ndarray, state: int, action: int, gamma: float) -> float:
-    """Q(s, a) = sum_{s'} P(s'|s,a) [ R + gamma * V(s') ], from the model."""
+    """Q(s, a) = sum_{s'} P(s'|s,a) [ R + gamma * V(s') ], from the model.
+
+    A transition flagged ``terminated`` earns no future reward, so it
+    contributes ``reward`` alone. For an ordinary GridWorld this changes
+    nothing (terminal cells keep V = 0 anyway), but MineWorld can terminate
+    on a *non-terminal* cell when the mine collapses, and bootstrapping
+    through that successor state would badly overestimate the gamble.
+    """
     q = 0.0
-    for prob, next_state, reward, _terminated in env.transition_probabilities(state, action):
-        q += prob * (reward + gamma * V[next_state])
+    for prob, next_state, reward, terminated in env.transition_probabilities(state, action):
+        future = 0.0 if terminated else gamma * V[next_state]
+        q += prob * (reward + future)
     return q
 
 
