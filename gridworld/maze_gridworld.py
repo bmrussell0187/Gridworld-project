@@ -19,10 +19,10 @@ def make_maze_gridworld(seed: int | None = 0, render_mode: str | None = None) ->
     walls |= {(9, y) for y in (0, 1, 2, 3, 6)}
 
     shaping_rewards = {
-        (1,4):0.02,
-        (0,2):0.04,
-        (4,0):0.06,
-        (8,0):0.08,
+        (1,4):0.03,
+        (0,2):0.05,
+        (4,0):0.07,
+        (8,0):0.1,
     }
 
     config = GridWorldConfig(
