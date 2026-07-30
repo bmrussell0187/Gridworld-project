@@ -161,10 +161,10 @@ def make_maze_gridworld(seed: int | None = 0, render_mode: str | None = None) ->
             (7, 8): -1.0,
             (9, 4): -4.0,
         },
-        rewards=shaping_rewards,
+        rewards={},
         walls=walls,
         step_reward=-0.01,
-        invalid_move_reward=-0.05,
+        invalid_move_reward=0,
         slip_probability=0.0,
         max_steps=200,
         seed=seed,
@@ -326,3 +326,36 @@ def make_continuous_mining_gridworld(
         mining_failure_reward=-10.0,
     )
     return MineWorldEnv(config, render_mode=render_mode)
+
+def make_deep_mining_gridworld(
+    seed: int | None = 0, render_mode: str | None = None
+) -> MineWorldEnv:
+    
+    config = MineWorldConfig(
+        width=7,
+        height=7,
+        start=(0, 0),
+        terminal_states={(6, 6): 10},
+        rewards={},
+        walls=set(),
+        step_reward=-0.01,
+        invalid_move_reward=-0.05,
+        slip_probability=0.0,
+        max_steps=200,
+        seed=seed,
+        mining_nodes={(2, 4), (5, 1)},
+        max_mining_count=19,
+        positive_probability_schedule="linear",
+        initial_positive_probability=1,
+        positive_probability_decrement=0.03,
+        minimum_positive_probability=0.00,
+        positive_reward_distribution="deterministic",
+        positive_reward_base_mean=10,
+        positive_reward_mean_increment=20,
+        mining_failure_reward=-100.0,
+        mining_failure_reward_proportion=1.0,
+        
+    )
+    return MineWorldEnv(config, render_mode=render_mode)
+
+    

@@ -31,12 +31,12 @@ def main() -> None:
 
     Q, policy, episode_returns, episode_lengths = q_learning(
         env,
-        episodes=100000,
-        alpha=0.01,
+        episodes=10000,
+        alpha=0.2,
         gamma=0.999,
         epsilon=1.0,
-        epsilon_min=0.5,
-        epsilon_decay=0.99995,
+        epsilon_min=0.05,
+        epsilon_decay=0.9999,
         seed=0,
     )
 
@@ -50,7 +50,7 @@ def main() -> None:
     plot_learning_curve(
         episode_returns,
         save_path=os.path.join(OUTPUT_DIR, "q_learning_curve.png"),
-        title="Q-learning: episode return on slippery GridWorld",
+        title="Q-learning: episode return on maze GridWorld",
     )
 
     ax = plot_policy(env, policy, title="Q-learning: greedy policy")
@@ -75,7 +75,10 @@ def main() -> None:
     save_path = os.path.join(OUTPUT_DIR, "q_learning_agent.gif")
     animate_episode(env, save_path=save_path, fps=2, show_policy=policy)
     print(f"Saved animation to {save_path}")
-
+    print("config start:", env.config.start)
+    print("env start:   ", env.state_to_coord(env.reset()[0]))
+    print("loaded from: ", type(env).__module__)
 
 if __name__ == "__main__":
     main()
+

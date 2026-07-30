@@ -394,7 +394,8 @@ class MineWorldConfig(GridWorldConfig):
         """The (deterministic) penalty paid when the m-th attempt collapses."""
         m = self._check_attempt_number(m)
         return float(
-            self.mining_failure_reward - (m - 1) * self.mining_failure_reward_increment
+            self.mining_failure_reward 
+            - (m - 1) * self.mining_failure_reward_increment 
         )
 
     def positive_reward_support(self, m: int) -> tuple[tuple[float, float], ...]:

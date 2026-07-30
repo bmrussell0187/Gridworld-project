@@ -27,7 +27,7 @@ import numpy as np
 
 from gridworld.animation import animate_episode
 from gridworld.dynamic_programming import value_iteration
-from gridworld.examples import make_mining_gridworld
+from gridworld.examples import make_deep_mining_gridworld
 from gridworld.mining_env import ACTION_NAMES, MINE
 from gridworld.plotting import (
     plot_learning_curve,
@@ -64,7 +64,7 @@ def greedy_episode(env, policy: np.ndarray, seed: int = 0) -> float:
 
 def main() -> None:
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    env = make_mining_gridworld(seed=0)
+    env = make_deep_mining_gridworld(seed=0)
 
     print(f"MineWorld: {env.width}x{env.height} grid, mining nodes at {env.mining_nodes}")
     print(f"state space: {env.n_states} states "
@@ -134,7 +134,7 @@ def main() -> None:
     #     times larger than the grid, and most of it is visited rarely;
     #   * the mining reward has high variance, so each TD update is noisy.
     print("\ntraining tabular Q-learning on the same MDP (model-free)...")
-    q_env = make_mining_gridworld(seed=0)
+    q_env = make_deep_mining_gridworld(seed=0)
     Q, q_policy, returns, _lengths = q_learning(
         q_env, episodes=5000, alpha=0.05, gamma=GAMMA, epsilon_decay=0.999, seed=0
     )
