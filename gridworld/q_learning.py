@@ -67,7 +67,7 @@ def q_learning(
     """
     n_states = env.n_states
     n_actions = env.action_space.n
-    Q = np.zeros((n_states, n_actions))
+    Q = np.full((n_states, n_actions),1)
     rng = np.random.default_rng(seed)
 
     episode_returns: list[float] = []

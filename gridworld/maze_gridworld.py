@@ -18,12 +18,6 @@ def make_maze_gridworld(seed: int | None = 0, render_mode: str | None = None) ->
     walls |= {(8, y) for y in (3, 4, 6, 8)}
     walls |= {(9, y) for y in (0, 1, 2, 3, 6)}
 
-    shaping_rewards = {
-        (1,4):0.03,
-        (0,2):0.05,
-        (4,0):0.07,
-        (8,0):0.1,
-    }
 
     config = GridWorldConfig(
         width=10,
@@ -37,10 +31,10 @@ def make_maze_gridworld(seed: int | None = 0, render_mode: str | None = None) ->
             (7, 8): -1.0,
             (9, 4): -4.0,
         },
-        rewards=shaping_rewards,
+        rewards={},
         walls=walls,
         step_reward=-0.01,
-        invalid_move_reward=0,
+        invalid_move_reward=-0.05,
         slip_probability=0.0,
         max_steps=100,
         seed=seed,
