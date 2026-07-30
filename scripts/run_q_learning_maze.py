@@ -72,6 +72,8 @@ def main() -> None:
         total_reward += reward
     print(f"Greedy rollout: steps={info['step']}, total_reward={total_reward:.3f}")
 
+    print("shaping rewards in config:", env.config.rewards)
+    print("trajectory rewards recorded:", len(env.trajectory["rewards"]))
     save_path = os.path.join(OUTPUT_DIR, "q_learning_agent.gif")
     animate_episode(env, save_path=save_path, fps=2, show_policy=policy)
     print(f"Saved animation to {save_path}")
