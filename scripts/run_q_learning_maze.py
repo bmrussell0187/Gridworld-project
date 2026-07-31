@@ -31,13 +31,14 @@ def main() -> None:
 
     Q, policy, episode_returns, episode_lengths = q_learning(
         env,
-        episodes=100000,
+        episodes=50000,
         alpha=0.2,
-        gamma=0.99,
+        gamma=0.999,
         epsilon=1.0,
         epsilon_min=0.05,
         epsilon_decay=0.9999,
         seed=0,
+        q_init=10.0,
     )
 
     print("")

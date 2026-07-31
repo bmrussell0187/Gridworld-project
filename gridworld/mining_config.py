@@ -39,6 +39,10 @@ import numpy as np
 
 from .config import GridWorldConfig
 
+from gridworld.examples import make_deep_mining_gridworld
+env = make_deep_mining_gridworld()
+print(env.config.describe_mining_schedule())
+
 # Schedules for p_positive(m), the probability that the m-th mining attempt
 # at a node succeeds. Every schedule must be non-increasing in m.
 POSITIVE_PROBABILITY_SCHEDULES = ("constant", "linear", "geometric")
