@@ -203,6 +203,9 @@ class MineWorldEnv(gym.Env):
         # Trajectory recorded during the current/most recent episode, used by
         # animation.py. The reset state is stored as frame 0 (no action).
         self.trajectory: dict[str, list[Any]] = self._empty_trajectory()
+        self._transition_cache: dict[
+            tuple[int, int], list[tuple[float, int, float, bool]]
+        ] = {}
 
     # ------------------------------------------------------------------
     # Augmented state <-> components helpers
@@ -400,10 +403,18 @@ class MineWorldEnv(gym.Env):
             surfaces once a sweep happens to reach a mining node.
         """
         self._require_exact_reward_model()
+
+        key = (int(state), int(action))
+        cached = self._transition_cache.get(key)
+        if cached is not None:
+            return cached
+
         position, counts = self.state_to_components(state)
 
         if self._is_terminal(position):
-            return [(1.0, int(state), 0.0, True)]
+            absorbing = [(1.0, int(state), 0.0, True)]
+            self._transition_cache[key] = absorbing
+            return absorbing
 
         outcomes: dict[tuple[int, float, bool], float] = {}
 
@@ -431,7 +442,9 @@ class MineWorldEnv(gym.Env):
             else:
                 add(branch.probability, next_state, branch.base_reward, branch.terminated)
 
-        return [(p, s, r, t) for (s, r, t), p in outcomes.items()]
+        result = [(p, s, r, t) for (s, r, t), p in outcomes.items()]
+        self._transition_cache[key] = result
+        return result
 
     # ------------------------------------------------------------------
     # The shared, side-effect-free transition model

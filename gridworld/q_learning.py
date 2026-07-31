@@ -23,6 +23,7 @@ from __future__ import annotations
 import numpy as np
 
 
+
 def q_learning(
     env,
     episodes: int = 1000,
@@ -32,6 +33,7 @@ def q_learning(
     epsilon_min: float = 0.05,
     epsilon_decay: float = 0.995,
     seed: int | None = None,
+    q_init: float = 0.0
 ) -> tuple[np.ndarray, np.ndarray, list[float], list[int]]:
     """Learn Q(s, a) from experience using epsilon-greedy tabular Q-learning.
 
@@ -67,7 +69,7 @@ def q_learning(
     """
     n_states = env.n_states
     n_actions = env.action_space.n
-    Q = np.full((n_states, n_actions),10.0)
+    Q = np.full((n_states, n_actions),float(q_init))
     rng = np.random.default_rng(seed)
 
     episode_returns: list[float] = []

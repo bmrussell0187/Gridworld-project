@@ -347,7 +347,7 @@ def make_deep_mining_gridworld(
         max_mining_count=19,
         positive_probability_schedule="linear",
         initial_positive_probability=1,
-        positive_probability_decrement=0.03,
+        positive_probability_decrement=1/19,
         minimum_positive_probability=0.00,
         positive_reward_distribution="deterministic",
         positive_reward_base_mean=10,

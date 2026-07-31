@@ -39,9 +39,7 @@ import numpy as np
 
 from .config import GridWorldConfig
 
-from gridworld.examples import make_deep_mining_gridworld
-env = make_deep_mining_gridworld()
-print(env.config.describe_mining_schedule())
+
 
 # Schedules for p_positive(m), the probability that the m-th mining attempt
 # at a node succeeds. Every schedule must be non-increasing in m.
@@ -179,6 +177,7 @@ class MineWorldConfig(GridWorldConfig):
     # --- the failure branch ----------------------------------------------
     mining_failure_reward: float = -10.0
     mining_failure_reward_increment: float = 0.0
+    mining_failure_reward_proportion: float = 0.0
 
     # --- mining where there is nothing to mine ----------------------------
     invalid_mining_reward: float | None = None
@@ -301,6 +300,10 @@ class MineWorldConfig(GridWorldConfig):
             raise ValueError("mining_failure_reward should be <= 0 (it is a penalty)")
         if self.mining_failure_reward_increment < 0.0:
             raise ValueError("mining_failure_reward_increment must be >= 0")
+        if self.mining_failure_reward_proportion < 0.0:
+            raise ValueError(
+                "mining_failure_reward_proportion must be >= 0 (it scales a penalty)"
+            )
 
     def _validate_state_space_size(self) -> None:
         size = self.state_space_size
@@ -397,9 +400,11 @@ class MineWorldConfig(GridWorldConfig):
     def mining_failure_reward_at(self, m: int) -> float:
         """The (deterministic) penalty paid when the m-th attempt collapses."""
         m = self._check_attempt_number(m)
+        banked = sum(self.positive_reward_scale(j) for j in range(1, m))
         return float(
-            self.mining_failure_reward 
-            - (m - 1) * self.mining_failure_reward_increment 
+            self.mining_failure_reward
+            - (m - 1) * self.mining_failure_reward_increment
+            - self.mining_failure_reward_proportion * banked
         )
 
     def positive_reward_support(self, m: int) -> tuple[tuple[float, float], ...]:
