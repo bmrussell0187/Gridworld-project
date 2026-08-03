@@ -133,15 +133,7 @@ def make_reward_shaping_gridworld(seed: int | None = 0, render_mode: str | None 
 def make_maze_gridworld(seed: int | None = 0, render_mode: str | None = None) -> GridWorldEnv:
     walls: set[tuple[int, int]] = set()
     walls |= {(0, y) for y in (3, 4, 5)}
-    walls |= {(1, y) for y in (3, 8)}
-    walls |= {(2, y) for y in (1, 3, 5, 6, 7, 8)}
-    walls |= {(3, y) for y in (1, 5)}
-    walls |= {(4, y) for y in (1, 2, 3, 4, 5, 7, 9)}
-    walls |= {(5, y) for y in (1, 4, 5, 7, 9)}
-    walls |= {(6, y) for y in (1, 2, 4, 7)}
-    walls |= {(7, y) for y in (1, 4, 6)}
-    walls |= {(8, y) for y in (3, 4, 6, 8)}
-    walls |= {(9, y) for y in (0, 1, 2, 3, 6)}
+    walls = ()
 
     shaping_rewards = {
         (1, 5): 0.03,
@@ -287,19 +279,8 @@ def make_risky_mining_gridworld(
 def make_continuous_mining_gridworld(
     seed: int | None = 0, render_mode: str | None = None
 ) -> MineWorldEnv:
-    """Example 8: mining with a *continuous* (log-normal) payout.
-
-    Identical to :func:`make_mining_gridworld` apart from the payout law: a
-    successful m-th mine pays ``LogNormal(log mu(m), sigma(m))``, whose
-    median is ``mu(m)`` and whose spread widens with ``m``.
-
-    This example is **simulation-only**: a continuous reward distribution has
-    no finite support, so ``transition_probabilities`` raises
-    :class:`~gridworld.mining_config.ContinuousRewardModelError` rather than
-    silently substituting an expectation. Use it with model-free methods
-    (``q_learning``, Stable-Baselines3) and contrast it with the exactly
-    solvable examples above.
-    """
+    
+    
     config = MineWorldConfig(
         width=5,
         height=5,
@@ -330,6 +311,11 @@ def make_continuous_mining_gridworld(
 def make_deep_mining_gridworld(
     seed: int | None = 0, render_mode: str | None = None
 ) -> MineWorldEnv:
+
+    walls: set[tuple[int, int]] = set()
+    walls |= {(1, y) for y in (0,1,2,3,4,5)}
+    walls |= {(5, y) for y in (2,3,4,5,6)}
+    walls |= {(2,5),(3,5),(3,2),(4,2)}
     
     config = MineWorldConfig(
         width=7,
@@ -337,7 +323,7 @@ def make_deep_mining_gridworld(
         start=(0, 0),
         terminal_states={(6, 6): 10},
         rewards={},
-        walls=set(),
+        walls=walls,
         step_reward=-0.01,
         invalid_move_reward=-0.05,
         slip_probability=0.0,
@@ -353,7 +339,6 @@ def make_deep_mining_gridworld(
         positive_reward_base_mean=10,
         positive_reward_mean_increment=20,
         mining_failure_reward=-100.0,
-        mining_failure_reward_proportion=1.0,
         
     )
     return MineWorldEnv(config, render_mode=render_mode)

@@ -177,7 +177,6 @@ class MineWorldConfig(GridWorldConfig):
     # --- the failure branch ----------------------------------------------
     mining_failure_reward: float = -10.0
     mining_failure_reward_increment: float = 0.0
-    mining_failure_reward_proportion: float = 0.0
 
     # --- mining where there is nothing to mine ----------------------------
     invalid_mining_reward: float | None = None
@@ -300,10 +299,7 @@ class MineWorldConfig(GridWorldConfig):
             raise ValueError("mining_failure_reward should be <= 0 (it is a penalty)")
         if self.mining_failure_reward_increment < 0.0:
             raise ValueError("mining_failure_reward_increment must be >= 0")
-        if self.mining_failure_reward_proportion < 0.0:
-            raise ValueError(
-                "mining_failure_reward_proportion must be >= 0 (it scales a penalty)"
-            )
+        
 
     def _validate_state_space_size(self) -> None:
         size = self.state_space_size
@@ -404,7 +400,7 @@ class MineWorldConfig(GridWorldConfig):
         return float(
             self.mining_failure_reward
             - (m - 1) * self.mining_failure_reward_increment
-            - self.mining_failure_reward_proportion * banked
+            - banked
         )
 
     def positive_reward_support(self, m: int) -> tuple[tuple[float, float], ...]:

@@ -50,17 +50,17 @@ def main() -> None:
 
     plot_learning_curve(
         episode_returns,
-        save_path=os.path.join(OUTPUT_DIR, "q_learning_curve.png"),
+        save_path=os.path.join(OUTPUT_DIR, "maze_q_learning_curve_.png"),
         title="Q-learning: episode return on maze GridWorld",
     )
 
     ax = plot_policy(env, policy, title="Q-learning: greedy policy")
-    ax.get_figure().savefig(os.path.join(OUTPUT_DIR, "q_learning_policy.png"), dpi=150)
+    ax.get_figure().savefig(os.path.join(OUTPUT_DIR, "maze_q_learning_policy.png"), dpi=150)
     plt.close(ax.get_figure())
 
     # Also save a Q-value grid (action-values in each state).
     ax = plot_q_values(env, Q, title="Q-learning: Q(s, a)")
-    ax.get_figure().savefig(os.path.join(OUTPUT_DIR, "q_learning_q_values.png"), dpi=150)
+    ax.get_figure().savefig(os.path.join(OUTPUT_DIR, "maze_q_learning_q_values.png"), dpi=150)
     plt.close(ax.get_figure())
 
     # Roll out one episode with the learned greedy policy and animate it.
@@ -75,7 +75,7 @@ def main() -> None:
 
     print("shaping rewards in config:", env.config.rewards)
     print("trajectory rewards recorded:", len(env.trajectory["rewards"]))
-    save_path = os.path.join(OUTPUT_DIR, "q_learning_agent.gif")
+    save_path = os.path.join(OUTPUT_DIR, "maze_q_learning_agent.gif")
     animate_episode(env, save_path=save_path, fps=2, show_policy=policy)
     print(f"Saved animation to {save_path}")
     print("config start:", env.config.start)

@@ -358,7 +358,7 @@ def plot_q_values(
                 ax.text(
                     x + dx, y + dy,
                     f"{_ACTION_LABELS[action]}{q_row[action]:.2f}",
-                    ha="center", va="center", fontsize=6, fontweight=weight, color=color,
+                    ha="center", va="center", fontsize=4, fontweight=weight, color=color,
                 )
     return ax
 
