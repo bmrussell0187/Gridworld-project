@@ -27,7 +27,7 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "outputs")
 
 def main() -> None:
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    env = make_maze_gridworld(seed=0) #make_slippery_gridworld(seed=0)
+    env = make_maze_gridworld(seed=0)
 
     Q, policy, episode_returns, episode_lengths = q_learning(
         env,
