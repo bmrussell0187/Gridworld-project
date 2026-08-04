@@ -28,7 +28,7 @@ def q_learning(
     env,
     episodes: int = 1000,
     alpha: float = 0.1,
-    gamma: float = 0.95,
+    gamma: float = 0.99,
     epsilon: float = 1.0,
     epsilon_min: float = 0.05,
     epsilon_decay: float = 0.995,

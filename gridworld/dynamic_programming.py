@@ -67,7 +67,7 @@ def _action_value(env, V: np.ndarray, state: int, action: int, gamma: float) -> 
 
 def value_iteration(
     env,
-    gamma: float = 0.999,
+    gamma: float = 0.99,
     theta: float = 1e-8,
     max_iterations: int = 10_000,
 ) -> tuple[np.ndarray, np.ndarray, list[float]]:
@@ -114,7 +114,7 @@ def value_iteration(
 
 def policy_iteration(
     env,
-    gamma: float = 0.999,
+    gamma: float = 0.99,
     theta: float = 1e-8,
     max_iterations: int = 1_000,
 ) -> tuple[np.ndarray, np.ndarray, list[float]]:

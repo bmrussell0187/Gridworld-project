@@ -10,8 +10,12 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "outputs")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-save_path_1 = os.path.join(OUTPUT_DIR, "maze_multiseed_null_init.npz")
+save_path = os.path.join(OUTPUT_DIR, "maze_multiseed_null_init.npz")
 
-data_1=np.load(save_path_1)
+data=np.load(save_path)
 
-print(greedy_1)
+print(np.where(data["episode_returns_null_maze"]>5))
+
+#plt.pyplot.scatter(x=)
+
+data["episode_returns_null_maze"].shape

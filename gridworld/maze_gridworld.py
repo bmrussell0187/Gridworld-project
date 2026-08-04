@@ -8,7 +8,7 @@ from .env import GridWorldEnv
 def make_maze_gridworld(seed: int | None = 0, render_mode: str | None = None) -> GridWorldEnv:
     walls: set[tuple[int, int]] = set()
     walls |= {(0, y) for y in (3, 4, 5)}
-    walls |= {(1, y) for y in (3, 8)}
+    walls |= {(1, y) for y in (1, 3, 7, 8)}
     walls |= {(2, y) for y in (1, 3, 5, 6, 7, 8)}
     walls |= {(3, y) for y in (1, 5)}
     walls |= {(4, y) for y in (1, 2, 3, 4, 5, 7, 9)}
@@ -25,8 +25,6 @@ def make_maze_gridworld(seed: int | None = 0, render_mode: str | None = None) ->
         height=10,
         start=(0, 9),
         terminal_states={
-            (1, 1): -1.0,
-            (1, 7): -1.0,
             (5, 2): 10.0,
             (7, 7): 1.0,
             (7, 8): -1.0,
