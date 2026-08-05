@@ -36,7 +36,7 @@ for seed in range (0,30):
     env = make_maze_gridworld(seed=seed)
     Q, policy, episode_returns, episode_lengths = q_learning(
             env,
-            episodes=300000,
+            episodes=30_000,
             alpha=0.2,
             gamma=0.999,
             epsilon=1.0,
@@ -64,6 +64,7 @@ res=greedy_shaping_maze[:N]
 print(str(res))
 
 
-np.savez_compressed(save_path, q_null_maze=np.array(q_shaping_maze), policy_1=np.array(policy_shaping_maze), episode_returns_null_maze=np.array(episode_returns_shaping_maze),greedy_null_maze=np.array(greedy_shaping_maze))
+np.savez_compressed(save_path, q_values=np.array(q_shaping_maze), policy=np.array(policy_shaping_maze), returns=np.array(episode_returns_shaping_maze), greedy=np.array(greedy_shaping_maze))
+
 
 print(greedy_shaping_maze)

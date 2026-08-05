@@ -5,7 +5,7 @@ from .env import GridWorldEnv
 
 
 
-def make_maze_gridworld(seed: int | None = 0, render_mode: str | None = None) -> GridWorldEnv:
+def make_maze_gridworld(seed: int | None = 0, render_mode: str | None = None, step_reward: float = -0.01, invalid_move_reward: float = -0.05, max_steps: int = 200) -> GridWorldEnv:
     walls: set[tuple[int, int]] = set()
     walls |= {(0, y) for y in (3, 4, 5)}
     walls |= {(1, y) for y in (1, 3, 7, 8)}
@@ -32,10 +32,10 @@ def make_maze_gridworld(seed: int | None = 0, render_mode: str | None = None) ->
         },
         rewards={},
         walls=walls,
-        step_reward=-0.01,
-        invalid_move_reward=-0.05,
+        step_reward=step_reward,
+        invalid_move_reward=invalid_move_reward,
         slip_probability=0.0,
-        max_steps=200,
+        max_steps=max_steps,
         seed=seed,
     )
     
