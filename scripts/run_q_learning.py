@@ -31,13 +31,14 @@ def main() -> None:
 
     Q, policy, episode_returns, episode_lengths = q_learning(
         env,
-        episodes=100000,
-        alpha=0.01,
-        gamma=0.999,
+        episodes=30_000,
+        alpha=0.2,
+        gamma=0.99,
         epsilon=1.0,
         epsilon_min=0.5,
-        epsilon_decay=0.99995,
+        epsilon_decay=0.9999,
         seed=0,
+        q_init=0.0
     )
 
     print("")
@@ -50,7 +51,7 @@ def main() -> None:
     plot_learning_curve(
         episode_returns,
         save_path=os.path.join(OUTPUT_DIR, "q_learning_curve.png"),
-        title="Q-learning: episode return on slippery GridWorld",
+        title="Q-learning: episode return on GridWorld",
     )
 
     ax = plot_policy(env, policy, title="Q-learning: greedy policy")
@@ -58,7 +59,7 @@ def main() -> None:
     plt.close(ax.get_figure())
 
     # Also save a Q-value grid (action-values in each state).
-    ax = plot_q_values(env, Q, title="Q-learning: Q(s, a)")
+    ax = plot_q_values(env, Q, title="Q*(s, a)")
     ax.get_figure().savefig(os.path.join(OUTPUT_DIR, "q_learning_q_values.png"), dpi=150)
     plt.close(ax.get_figure())
 
@@ -75,6 +76,10 @@ def main() -> None:
     save_path = os.path.join(OUTPUT_DIR, "q_learning_agent.gif")
     animate_episode(env, save_path=save_path, fps=2, show_policy=policy)
     print(f"Saved animation to {save_path}")
+
+
+    print(f"episodes reaching the +10: "
+        f"{sum(r > 1 for r in episode_returns)} of {len(episode_returns)}")
 
 
 if __name__ == "__main__":

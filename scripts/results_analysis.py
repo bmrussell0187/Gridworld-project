@@ -22,7 +22,7 @@ import numpy as np
 # SETTINGS -- this is the only part you need to edit
 # ===========================================================================
 
-EXPERIMENT = "q_init"            # must match EXPERIMENT in general_maze_experiment.py
+EXPERIMENT = "baseline"            # must match EXPERIMENT in general_maze_experiment.py
 
 METRIC = "success_rate"          # what to plot against the swept parameter:
                                  #   "success_rate"       fraction of seeds that
@@ -35,7 +35,7 @@ SHOW_LEARNING_CURVES = True      # also plot return-per-episode during training?
 SMOOTHING_WINDOW = 100           # moving average, in episodes, for those curves
 N_CURVES = 5                     # how many of the values to draw curves for
 
-SAVE_PLOTS = False    # True: save PNGs to outputs/. False: show them.
+SAVE_PLOTS = True    # True: save PNGs to outputs/. False: show them.
 
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "outputs")
 
@@ -83,6 +83,7 @@ best_cell = tuple(best_terminal["cell"])
 reached_best = np.array(
     [tuple(run["greedy_final_cell"]) == best_cell for run in runs]
 ).reshape(n_values, n_seeds)
+
 
 
 # --- Summarise each setting across its seeds -------------------------------

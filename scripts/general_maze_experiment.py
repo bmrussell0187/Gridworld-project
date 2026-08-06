@@ -46,18 +46,18 @@ from gridworld.q_learning import q_learning
 
 
 # Baseline experiment
-EXPERIMENT = "baseline"
-LABEL = "baseline"
-PARAM = "q_init"
-TARGET = "agent"
-VALUES = [0]
-
-# Experiment 1: how optimistic is the initial Q table?
-#EXPERIMENT = "q_init"
-#LABEL = "Q initialisation"
+#EXPERIMENT = "baseline"
+#LABEL = "baseline"
 #PARAM = "q_init"
 #TARGET = "agent"
-#VALUES = [round(0.70 + 0.02 * i, 2) for i in range(16)]   # 0.70 ... 1.00
+#VALUES = [0]
+
+# Experiment 1: how optimistic is the initial Q table?
+EXPERIMENT = "q_init"
+LABEL = "Q initialisation"
+PARAM = "q_init"
+TARGET = "agent"
+VALUES = [round(0.70 + 0.02 * i, 2) for i in range(16)]   # 0.70 ... 1.00
 
 # Experiment 2: how quickly does exploration decay?
 # EXPERIMENT = "epsilon_decay"
@@ -99,7 +99,7 @@ VALUES = [0]
 # so a handful of seeds cannot measure it: 5 seeds can only ever report
 #  0%, 20%, 40%, ... Should use maybe 10+.
 SEEDS = list(range(10))
-N_EPISODES = 20_000  # training episodes per run
+N_EPISODES = 30_000  # training episodes per run
 
 AGENT_SETTINGS = {   # arguments of q_learning
     "alpha": 0.2,
@@ -187,7 +187,7 @@ for value in VALUES:
         raise ValueError(f"TARGET must be 'agent' or 'env', not {TARGET!r}")
 
     for seed in SEEDS:
-        print("Seed", SEEDS.index(seed)+1, "of", len(SEEDS), "in run", VALUES.index(value)+1, "of", len(VALUES))
+        print("Seed", SEEDS.index(seed)+1, "/", len(SEEDS), "in run", VALUES.index(value)+1, "/", len(VALUES))
         result = run_one_agent(env_settings, agent_settings, seed)
         result["run"][PARAM] = value        # remember which value this run used
         runs.append(result["run"])
