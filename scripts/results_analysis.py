@@ -22,7 +22,7 @@ import numpy as np
 # SETTINGS -- this is the only part you need to edit
 # ===========================================================================
 
-EXPERIMENT = "baseline"            # must match EXPERIMENT in general_maze_experiment.py
+EXPERIMENT = "q_init"            # must match EXPERIMENT in general_maze_experiment.py
 
 METRIC = "success_rate"          # what to plot against the swept parameter:
                                  #   "success_rate"       fraction of seeds that
@@ -33,7 +33,7 @@ METRIC = "success_rate"          # what to plot against the swept parameter:
 
 SHOW_LEARNING_CURVES = True      # also plot return-per-episode during training?
 SMOOTHING_WINDOW = 100           # moving average, in episodes, for those curves
-N_CURVES = 5                     # how many of the values to draw curves for
+N_CURVES = 16                     # how many of the values to draw curves for
 
 SAVE_PLOTS = True    # True: save PNGs to outputs/. False: show them.
 
@@ -111,8 +111,8 @@ if METRIC == "success_rate":
     centre = (successes + z**2 / 2) / (n_seeds + z**2)
     half = (z / (n_seeds + z**2)) * np.sqrt(successes * (n_seeds - successes) / n_seeds + z**2 / 4)
 
-    ax1.fill_between(values, centre - half, centre + half, color="tab:blue", alpha=0.25,
-                     label="95% interval")
+    #ax1.fill_between(values, centre - half, centre + half, color="tab:blue", alpha=0.25,
+    #                 label="95% interval")
     ax1.plot(values, rate, "o-", color="tab:blue", linewidth=2, markersize=4,
              label=f"fraction of {n_seeds} seeds")
     ax1.set_ylabel(f"Seeds whose policy reached {best_cell}")
@@ -168,7 +168,7 @@ if SHOW_LEARNING_CURVES:
     ax2.set_xlabel("Episode")
     ax2.set_ylabel(f"Training return ({SMOOTHING_WINDOW}-episode mean)")
     ax2.set_title(title)
-    ax2.legend(title=label, fontsize="small")
+    ax2.legend(loc="center left", bbox_to_anchor=(1.02, 0.5), frameon=False)
     fig2.tight_layout()
 
 

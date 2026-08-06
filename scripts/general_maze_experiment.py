@@ -99,7 +99,7 @@ VALUES = [round(0.70 + 0.02 * i, 2) for i in range(16)]   # 0.70 ... 1.00
 # so a handful of seeds cannot measure it: 5 seeds can only ever report
 #  0%, 20%, 40%, ... Should use maybe 10+.
 SEEDS = list(range(10))
-N_EPISODES = 30_000  # training episodes per run
+N_EPISODES = 15_000  # training episodes per run
 
 AGENT_SETTINGS = {   # arguments of q_learning
     "alpha": 0.2,
