@@ -44,12 +44,20 @@ from gridworld.q_learning import q_learning
 #             "env"   if it is an argument of make_maze_gridworld.
 # VALUES:     the list of values to try.
 
-# Experiment 1: how optimistic is the initial Q table?
-EXPERIMENT = "q_init"
-LABEL = "Q initialisation"
+
+# Baseline experiment
+EXPERIMENT = "baseline"
+LABEL = "baseline"
 PARAM = "q_init"
 TARGET = "agent"
-VALUES = [round(0.70 + 0.02 * i, 2) for i in range(16)]   # 0.70 ... 1.00
+VALUES = [0]
+
+# Experiment 1: how optimistic is the initial Q table?
+#EXPERIMENT = "q_init"
+#LABEL = "Q initialisation"
+#PARAM = "q_init"
+#TARGET = "agent"
+#VALUES = [round(0.70 + 0.02 * i, 2) for i in range(16)]   # 0.70 ... 1.00
 
 # Experiment 2: how quickly does exploration decay?
 # EXPERIMENT = "epsilon_decay"
@@ -179,6 +187,7 @@ for value in VALUES:
         raise ValueError(f"TARGET must be 'agent' or 'env', not {TARGET!r}")
 
     for seed in SEEDS:
+        print("Seed", SEEDS.index(seed)+1, "of", len(SEEDS), "in run", VALUES.index(value)+1, "of", len(VALUES))
         result = run_one_agent(env_settings, agent_settings, seed)
         result["run"][PARAM] = value        # remember which value this run used
         runs.append(result["run"])

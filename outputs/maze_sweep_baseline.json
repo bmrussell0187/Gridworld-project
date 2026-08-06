@@ -1,0 +1,849 @@
+{
+  "experiment": "baseline",
+  "created": "2026-08-06T14:12:24",
+  "label": "baseline",
+  "param": "q_init",
+  "target": "agent",
+  "values": [
+    0
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "episodes": 20000,
+  "agent_settings": {
+    "alpha": 0.2,
+    "gamma": 0.99,
+    "epsilon": 1.0,
+    "epsilon_min": 0.05,
+    "epsilon_decay": 0.9999,
+    "q_init": 0.0
+  },
+  "env_settings": {
+    "step_reward": -0.01,
+    "invalid_move_reward": -0.05,
+    "max_steps": 200
+  },
+  "terminal_states": [
+    {
+      "cell": [
+        5,
+        2
+      ],
+      "reward": 10.0
+    },
+    {
+      "cell": [
+        7,
+        7
+      ],
+      "reward": 1.0
+    },
+    {
+      "cell": [
+        7,
+        8
+      ],
+      "reward": -1.0
+    },
+    {
+      "cell": [
+        9,
+        4
+      ],
+      "reward": -4.0
+    }
+  ],
+  "runs": [
+    {
+      "seed": 0,
+      "greedy_return": 0.85,
+      "greedy_length": 15,
+      "greedy_terminated": true,
+      "greedy_final_cell": [
+        7,
+        7
+      ],
+      "greedy_path": [
+        [
+          0,
+          9
+        ],
+        [
+          1,
+          9
+        ],
+        [
+          2,
+          9
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "final_train_return": 0.65896,
+      "q_init": 0
+    },
+    {
+      "seed": 1,
+      "greedy_return": 0.85,
+      "greedy_length": 15,
+      "greedy_terminated": true,
+      "greedy_final_cell": [
+        7,
+        7
+      ],
+      "greedy_path": [
+        [
+          0,
+          9
+        ],
+        [
+          1,
+          9
+        ],
+        [
+          2,
+          9
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "final_train_return": 0.6442599999999999,
+      "q_init": 0
+    },
+    {
+      "seed": 2,
+      "greedy_return": 0.85,
+      "greedy_length": 15,
+      "greedy_terminated": true,
+      "greedy_final_cell": [
+        7,
+        7
+      ],
+      "greedy_path": [
+        [
+          0,
+          9
+        ],
+        [
+          1,
+          9
+        ],
+        [
+          2,
+          9
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "final_train_return": 0.6359799999999999,
+      "q_init": 0
+    },
+    {
+      "seed": 3,
+      "greedy_return": 0.85,
+      "greedy_length": 15,
+      "greedy_terminated": true,
+      "greedy_final_cell": [
+        7,
+        7
+      ],
+      "greedy_path": [
+        [
+          0,
+          9
+        ],
+        [
+          1,
+          9
+        ],
+        [
+          2,
+          9
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "final_train_return": 0.6596799999999999,
+      "q_init": 0
+    },
+    {
+      "seed": 4,
+      "greedy_return": 0.85,
+      "greedy_length": 15,
+      "greedy_terminated": true,
+      "greedy_final_cell": [
+        7,
+        7
+      ],
+      "greedy_path": [
+        [
+          0,
+          9
+        ],
+        [
+          1,
+          9
+        ],
+        [
+          2,
+          9
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "final_train_return": 0.6546000000000001,
+      "q_init": 0
+    },
+    {
+      "seed": 5,
+      "greedy_return": 0.85,
+      "greedy_length": 15,
+      "greedy_terminated": true,
+      "greedy_final_cell": [
+        7,
+        7
+      ],
+      "greedy_path": [
+        [
+          0,
+          9
+        ],
+        [
+          1,
+          9
+        ],
+        [
+          2,
+          9
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "final_train_return": 0.6425799999999999,
+      "q_init": 0
+    },
+    {
+      "seed": 6,
+      "greedy_return": 0.85,
+      "greedy_length": 15,
+      "greedy_terminated": true,
+      "greedy_final_cell": [
+        7,
+        7
+      ],
+      "greedy_path": [
+        [
+          0,
+          9
+        ],
+        [
+          1,
+          9
+        ],
+        [
+          2,
+          9
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "final_train_return": 0.61824,
+      "q_init": 0
+    },
+    {
+      "seed": 7,
+      "greedy_return": 0.85,
+      "greedy_length": 15,
+      "greedy_terminated": true,
+      "greedy_final_cell": [
+        7,
+        7
+      ],
+      "greedy_path": [
+        [
+          0,
+          9
+        ],
+        [
+          1,
+          9
+        ],
+        [
+          2,
+          9
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "final_train_return": 0.6174599999999999,
+      "q_init": 0
+    },
+    {
+      "seed": 8,
+      "greedy_return": 0.85,
+      "greedy_length": 15,
+      "greedy_terminated": true,
+      "greedy_final_cell": [
+        7,
+        7
+      ],
+      "greedy_path": [
+        [
+          0,
+          9
+        ],
+        [
+          1,
+          9
+        ],
+        [
+          2,
+          9
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "final_train_return": 0.6551600000000001,
+      "q_init": 0
+    },
+    {
+      "seed": 9,
+      "greedy_return": 0.85,
+      "greedy_length": 15,
+      "greedy_terminated": true,
+      "greedy_final_cell": [
+        7,
+        7
+      ],
+      "greedy_path": [
+        [
+          0,
+          9
+        ],
+        [
+          1,
+          9
+        ],
+        [
+          2,
+          9
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "final_train_return": 0.6203599999999999,
+      "q_init": 0
+    }
+  ],
+  "arrays_file": "maze_sweep_baseline_arrays.npz"
+}

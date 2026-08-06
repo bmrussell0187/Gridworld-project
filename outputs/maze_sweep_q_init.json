@@ -1,6 +1,6 @@
 {
   "experiment": "q_init",
-  "created": "2026-08-05T12:03:16",
+  "created": "2026-08-06T01:36:06",
   "label": "Q initialisation",
   "param": "q_init",
   "target": "agent",
