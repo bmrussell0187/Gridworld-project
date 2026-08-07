@@ -53,11 +53,11 @@ from gridworld.q_learning import q_learning
 #VALUES = [0]
 
 # Experiment 1: how optimistic is the initial Q table?
-EXPERIMENT = "q_init"
-LABEL = "Q initialisation"
-PARAM = "q_init"
-TARGET = "agent"
-VALUES = [round(0.70 + 0.02 * i, 2) for i in range(16)]   # 0.70 ... 1.00
+#EXPERIMENT = "q_init"
+#LABEL = "Q initialisation"
+#PARAM = "q_init"
+#TARGET = "agent"
+#VALUES = [round(0.70 + 0.02 * i, 2) for i in range(16)]   # 0.70 ... 1.00
 
 # Experiment 2: how quickly does exploration decay?
 # EXPERIMENT = "epsilon_decay"
@@ -67,11 +67,11 @@ VALUES = [round(0.70 + 0.02 * i, 2) for i in range(16)]   # 0.70 ... 1.00
 # VALUES = [0.99, 0.995, 0.999, 0.9995, 0.9999, 0.99995]
 
 # Experiment 3: how much exploration do we keep forever?
-# EXPERIMENT = "epsilon_min"
-# LABEL = "Minimum epsilon"
-# PARAM = "epsilon_min"
-# TARGET = "agent"
-# VALUES = [0.0, 0.01, 0.05, 0.1, 0.2]
+EXPERIMENT = "epsilon_min"
+LABEL = "Minimum epsilon"
+PARAM = "epsilon_min"
+TARGET = "agent"
+VALUES = [0.0, 0.01, 0.05, 0.1, 0.2,0.5,0.9]
 
 # Experiment 4: how big are the learning steps?
 # EXPERIMENT = "alpha"
@@ -99,7 +99,7 @@ VALUES = [round(0.70 + 0.02 * i, 2) for i in range(16)]   # 0.70 ... 1.00
 # so a handful of seeds cannot measure it: 5 seeds can only ever report
 #  0%, 20%, 40%, ... Should use maybe 10+.
 SEEDS = list(range(10))
-N_EPISODES = 15_000  # training episodes per run
+N_EPISODES = 30_000  # training episodes per run
 
 AGENT_SETTINGS = {   # arguments of q_learning
     "alpha": 0.2,

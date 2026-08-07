@@ -73,7 +73,6 @@ for run, curve in zip(value_runs, smoothed):
 ax.set_xlabel("Episode")
 ax.set_ylabel(f"Training return ({SMOOTHING_WINDOW}-episode mean)")
 ax.set_title("Return curves for Q_0=0.96")
-ax.legend(loc="center left", bbox_to_anchor=(1.02, 0.5), frameon=False)
 fig.tight_layout()
 
 

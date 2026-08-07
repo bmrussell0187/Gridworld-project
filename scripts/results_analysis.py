@@ -22,7 +22,7 @@ import numpy as np
 # SETTINGS -- this is the only part you need to edit
 # ===========================================================================
 
-EXPERIMENT = "q_init"            # must match EXPERIMENT in general_maze_experiment.py
+EXPERIMENT = "epsilon_min"            # must match EXPERIMENT in general_maze_experiment.py
 
 METRIC = "success_rate"          # what to plot against the swept parameter:
                                  #   "success_rate"       fraction of seeds that
