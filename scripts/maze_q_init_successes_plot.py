@@ -35,10 +35,11 @@ n_values, n_seeds = len(values), len(seeds)
 
 
 
-matches = np.flatnonzero(np.isclose(values, VALUE))
+matches = np.flatnonzero(values == VALUE)
 
-row = int(matches[0])
- 
+row = matches[0]
+
+#Selects the values matching q_init
 value_runs = runs[row * n_seeds:(row + 1) * n_seeds]
 
 with np.load(os.path.join(OUTPUT_DIR, results["arrays_file"])) as arrays:
